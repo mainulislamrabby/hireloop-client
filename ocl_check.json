@@ -1,0 +1,18 @@
+{
+  "OclCheck": {
+    "Adapters": [
+      {
+        "devID": 258,
+        "venID": 32902,
+        "devName": "Intel(R) HD Graphics",
+        "strDrvVer": "9.17.10.4459",
+        "strDrvDate": "20160519000000.000000-000",
+        "clCVersion": "",
+        "clDevVersion": "",
+        "clDrvVersion": "",
+        "checkResult": 0,
+        "checked": 0
+      }
+    ]
+  }
+}
