@@ -67,7 +67,7 @@ const Navbar = () => {
           </Link>
 
           <Link href="/sign-up">
-            <Button className="h-9 rounded-md bg-[#635bff] px-4 text-xs font-medium text-white hover:bg-[#554df0] sm:px-5 sm:text-sm">
+            <Button className="cursor-pointer h-9 rounded-md bg-[#635bff] px-4 text-xs font-medium text-white hover:bg-[#554df0] sm:px-5 sm:text-sm">
               Get Started
             </Button>
           </Link>
@@ -76,14 +76,9 @@ const Navbar = () => {
         {/* Mobile Menu */}
         <div className="md:hidden">
           <Sheet>
-            <SheetTrigger>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-white/10 hover:text-white"
-              >
-                <Menu className="size-5" />
-              </Button>
+            <SheetTrigger className="inline-flex size-10 items-center justify-center rounded-md text-white transition-colors hover:bg-white/10 md:hidden">
+              <Menu className="size-5" />
+              <span className="sr-only">Open menu</span>
             </SheetTrigger>
 
             <SheetContent
