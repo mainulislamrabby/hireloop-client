@@ -18,6 +18,8 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+type UserRole = "seeker" | "recruiter" | "admin";
+
 type Provider = "google" | "github" | "linkedin";
 
 interface SignUpData {
@@ -31,6 +33,7 @@ const SignUpPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [role, setRole] = useState<UserRole>("seeker");
   const router = useRouter();
 
   // Sign Up Form Handler
@@ -69,7 +72,8 @@ const SignUpPage = () => {
       const { data, error } = await authClient.signUp.email({
         name: signUpData.name, // required, The name of the user.
         email: signUpData.email, // required, The email address of the user.
-        password: signUpData.password, // required, The password of the user. It should be at least 8 characters long and max 128 by default.
+        password: signUpData.password,
+        role,
         callbackURL: "/", // An optional URL to redirect to after the user signs up.
       });
       if (error) {
@@ -214,6 +218,26 @@ const SignUpPage = () => {
                 required
                 className="h-11 border-white/10 bg-[#181818] text-white placeholder:text-white/30 focus-visible:ring-[#635bff]"
               />
+            </div>
+
+            {/* Account Role */}
+            <div className="space-y-2">
+              <Label htmlFor="role" className="text-xs text-white/80">
+                Account Type
+              </Label>
+
+              <select
+                id="role"
+                name="role"
+                value={role}
+                onChange={(event) => setRole(event.target.value as UserRole)}
+                required
+                className="h-11 w-full rounded-md border border-white/10 bg-[#181818] px-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#635bff]"
+              >
+                <option value="seeker">Job Seeker</option>
+                <option value="recruiter">Recruiter</option>
+                <option value="admin">Admin</option>
+              </select>
             </div>
 
             {/* Password */}
