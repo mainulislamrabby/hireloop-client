@@ -14,6 +14,9 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Provider = "google" | "github" | "linkedin";
 
@@ -27,6 +30,7 @@ const SignInPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   // Email and password submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -46,8 +50,27 @@ const SignInPage = () => {
       // TODO: Connect your authentication provider here.
       // credentials contains the collected form data.
       // Never log passwords or store them in localStorage.
+      const { data, error } = await authClient.signIn.email({
+        email: credentials.email, // required, The email address of the user.
+        password: credentials.password, // required, The password of the user. It should be at least 8 characters long and max 128 by default.
+        rememberMe: credentials.rememberMe, // If false, the user will be signed out when the browser is closed. (optional) (default: true)
+        callbackURL: "/", // An optional URL to redirect to after the user signs in. (optional)
+      });
 
-      console.log("Email sign-in submitted:", credentials.email);
+      if (error) {
+        toast.error(error.message || "Failed to sign in.");
+        return;
+      }
+
+      if (data) {
+        toast.success("Login successful!");
+
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Sign-in error:", error);
+
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

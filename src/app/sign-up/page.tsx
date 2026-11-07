@@ -15,6 +15,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type Provider = "google" | "github" | "linkedin";
 
@@ -29,6 +31,7 @@ const SignUpPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   // Sign Up Form Handler
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,12 +45,12 @@ const SignUpPage = () => {
     const confirmPassword = String(formData.get("confirmPassword") || "");
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
 
     if (!agreeToTerms) {
-      alert("Please agree to the Terms of Service.");
+      toast.error("Please agree to the Terms of Service.");
       return;
     }
 
@@ -70,16 +73,18 @@ const SignUpPage = () => {
         callbackURL: "/", // An optional URL to redirect to after the user signs up.
       });
       if (error) {
-        alert(error.message || "Failed to create account.");
+        toast.error(error.message || "Failed to create account.");
         return;
       }
 
       if (data) {
-        console.log("Signup successful:", data.user.email);
+        toast.success("Account created successfully!");
+
+        router.push("/");
       }
     } catch (error) {
       console.error("Signup error:", error);
-      alert("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
