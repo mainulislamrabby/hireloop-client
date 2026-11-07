@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
 
 type Provider = "google" | "github" | "linkedin";
 
@@ -62,11 +63,23 @@ const SignUpPage = () => {
       // TODO: Connect your authentication provider here.
       // signUpData contains the collected form data.
       // Never log or store passwords in localStorage.
-
-      console.log("Signup submitted:", {
-        name: signUpData.name,
-        email: signUpData.email,
+      const { data, error } = await authClient.signUp.email({
+        name: signUpData.name, // required, The name of the user.
+        email: signUpData.email, // required, The email address of the user.
+        password: signUpData.password, // required, The password of the user. It should be at least 8 characters long and max 128 by default.
+        callbackURL: "/", // An optional URL to redirect to after the user signs up.
       });
+      if (error) {
+        alert(error.message || "Failed to create account.");
+        return;
+      }
+
+      if (data) {
+        console.log("Signup successful:", data.user.email);
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
