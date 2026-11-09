@@ -25,25 +25,43 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { createJob } from "@/lib/actions/jobs";
+import { JobDataTypes } from "@/types/jobDataTypes";
 
 const AddNewJobs = () => {
   const router = useRouter();
 
   const [jobType, setJobType] = useState("full-time");
   const [remoteAllowed, setRemoteAllowed] = useState(false);
-  const [frequency, setFrequency] = useState<string | null>("per-hour");
+  const [frequency, setFrequency] =
+    useState<JobDataTypes["frequency"]>("per-hour");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const jobData = Object.fromEntries(formData.entries());
+    const jobData: JobDataTypes = {
+      title: formData.get("title") as string,
+      company: formData.get("company") as string,
+      category: formData.get("category") as string,
+      jobType: jobType as JobDataTypes["jobType"],
+      remoteAllowed,
+      location: formData.get("location") as string,
+      deadline: formData.get("deadline") as string,
+      minSalary: Number(formData.get("minSalary")) || 0,
+      maxSalary: Number(formData.get("maxSalary")) || 0,
+      frequency,
+      responsibilities: formData.get("responsibilities") as string,
+      requirements: formData.get("requirements") as string,
+    };
 
     console.log("Job Form Data:", jobData);
 
     toast.success("Job details saved successfully!");
 
     // Connect your job creation API here.
+    const result = await createJob(jobData);
+    console.log("Job data", result);
   };
 
   return (

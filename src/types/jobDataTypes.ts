@@ -1,0 +1,14 @@
+export interface JobDataTypes {
+  title: string;
+  company: string;
+  category: string;
+  jobType: "full-time" | "part-time" | "contract" | "internship";
+  remoteAllowed: boolean;
+  location: string;
+  deadline: string;
+  minSalary: number;
+  maxSalary: number;
+  frequency: "per-hour" | "per-day" | "per-week" | "per-month" | "per-year" | null;
+  responsibilities: string;
+  requirements: string;
+}
