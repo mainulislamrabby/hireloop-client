@@ -15,6 +15,7 @@ import {
   Wallet,
   LogOut,
   Plus,
+  PlusCircle,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -57,8 +58,13 @@ const menuItemsByRole: Record<UserRole, MenuItem[]> = {
     { name: "Dashboard", url: "/dashboard/recruiter", icon: LayoutDashboard },
     {
       name: "Manage Jobs",
-      url: "/dashboard/manage-jobs",
+      url: "/dashboard/recruiter/jobs",
       icon: BriefcaseBusiness,
+    },
+    {
+      name: "Add Job",
+      url: "/dashboard/recruiter/jobs/new",
+      icon: PlusCircle,
     },
     { name: "Applications", url: "/dashboard/applications", icon: FileText },
     { name: "Settings", url: "/dashboard/settings", icon: Settings },

@@ -25,21 +25,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { authClient } from "@/lib/auth-client";
 
-const navLinks = [
-  {
-    label: "Browse Jobs",
-    href: "/browse-jobs",
-  },
-  {
-    label: "Company",
-    href: "/company",
-  },
-  {
-    label: "Pricing",
-    href: "/pricing",
-  },
-];
-
 type ProfileDropdownProps = {
   user: {
     name?: string | null;
@@ -99,6 +84,24 @@ const Navbar = () => {
   const router = useRouter();
 
   const user = session?.user;
+  const navLinks = [
+    {
+      label: "Browse Jobs",
+      href: "/browse-jobs",
+    },
+    {
+      label: "Company",
+      href: "/company",
+    },
+    {
+      label: "Pricing",
+      href: "/pricing",
+    },
+    {
+      label: "Dashboard",
+      href: `/dashboard/${session?.user.role || "seeker"}`,
+    },
+  ];
 
   const handleSignOut = async () => {
     try {
