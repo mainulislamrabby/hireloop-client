@@ -8,8 +8,6 @@ import {
   Search,
   MapPin,
   Users,
-  Pencil,
-  Trash2,
   MoreVertical,
   BriefcaseBusiness,
   CalendarDays,
@@ -31,13 +29,15 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 import type { JobDataTypes } from "@/types/jobDataTypes";
-import { useRouter } from "next/navigation";
+
 import { getJobs } from "@/lib/api/jobs";
+import EditJobAction from "@/components/shared/recruiterButton/EditJobAction";
+import DeleteJobAction from "@/components/shared/recruiterButton/DeleteJobAction";
+import { deleteJobs } from "@/lib/actions/jobs";
 
 type Job = JobDataTypes & {
   _id: string;
@@ -50,7 +50,6 @@ const ManageJobs = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const router = useRouter();
 
   // Fetch recruiter jobs
   useEffect(() => {
@@ -70,17 +69,11 @@ const ManageJobs = () => {
   }, []);
 
   // Delete job
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (_id: string) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/jobs/${id}`, {
-        method: "DELETE",
-      });
+      await deleteJobs(_id);
 
-      if (!res.ok) {
-        throw new Error("Failed to delete job");
-      }
-
-      setJobs((prev) => prev.filter((job) => job._id !== id));
+      setJobs((prev) => prev.filter((job) => job._id !== _id));
 
       toast.success("Job deleted successfully.");
     } catch {
@@ -94,6 +87,30 @@ const ManageJobs = () => {
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
+
+  // Update Jobs
+  const handleUpdate = async (updatedJob: Job) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/jobs/${updatedJob._id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedJob),
+      },
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to update job");
+    }
+
+    setJobs((prev) =>
+      prev.map((job) => (job._id === updatedJob._id ? updatedJob : job)),
+    );
+
+    toast.success("Job updated successfully.");
+  };
 
   return (
     <div className="min-h-screen bg-[#09090b] p-4 text-white sm:p-6 lg:p-8">
@@ -269,38 +286,19 @@ const ManageJobs = () => {
                     {/* Actions */}
                     <TableCell className="text-right">
                       <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="text-white/60 hover:bg-white/10 hover:text-white"
-                          >
-                            <MoreVertical className="size-4" />
-                          </Button>
+                        <DropdownMenuTrigger className="flex size-9 items-center justify-center rounded-md text-white/60 hover:bg-white/10 hover:text-white">
+                          <MoreVertical className="size-4" />
                         </DropdownMenuTrigger>
 
                         <DropdownMenuContent
                           align="end"
                           className="border-white/10 bg-[#181818] text-white"
                         >
-                          <DropdownMenuItem
-                            onClick={() =>
-                              router.push(
-                                `/dashboard/recruiter/jobs/${job._id}/edit`,
-                              )
-                            }
-                          >
-                            <Pencil className="mr-2 size-4" />
-                            Edit Job
-                          </DropdownMenuItem>
+                          <EditJobAction job={job} onSave={handleUpdate} />
 
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(job._id)}
-                            className="text-red-400 focus:text-red-400"
-                          >
-                            <Trash2 className="mr-2 size-4" />
-                            Delete Job
-                          </DropdownMenuItem>
+                          <DeleteJobAction
+                            onDelete={() => handleDelete(job._id)}
+                          />
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
