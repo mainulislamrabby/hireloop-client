@@ -8,7 +8,20 @@ export interface JobDataTypes {
   deadline: string;
   minSalary: number;
   maxSalary: number;
-  frequency: "per-hour" | "per-day" | "per-week" | "per-month" | "per-year" | null;
+  frequency:
+    | "per-hour"
+    | "per-day"
+    | "per-week"
+    | "per-month"
+    | "per-year"
+    | null;
   responsibilities: string;
   requirements: string;
 }
+
+export type JobWithMetaTypes = JobDataTypes & {
+  _id: string;
+  applicants?: number;
+  status?: "active" | "expired";
+  createdAt?: string;
+};

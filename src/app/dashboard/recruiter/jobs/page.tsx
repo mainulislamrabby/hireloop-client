@@ -13,6 +13,10 @@ import {
   CalendarDays,
 } from "lucide-react";
 
+import { Pencil } from "lucide-react";
+
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -36,8 +40,9 @@ import type { JobDataTypes } from "@/types/jobDataTypes";
 
 import { getJobs } from "@/lib/api/jobs";
 import EditJobAction from "@/components/shared/recruiterButton/EditJobAction";
-import DeleteJobAction from "@/components/shared/recruiterButton/DeleteJobAction";
-import { deleteJobs } from "@/lib/actions/jobs";
+import DeleteJobAction from "@/components/shared/DeleteJobAction";
+import ViewJobDetails from "@/components/shared/recruiterButton/ViewJobDetails";
+import { deleteJobs, updateJob } from "@/lib/actions/jobs";
 
 type Job = JobDataTypes & {
   _id: string;
@@ -50,6 +55,7 @@ const ManageJobs = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [editingJob, setEditingJob] = useState<Job | null>(null);
 
   // Fetch recruiter jobs
   useEffect(() => {
@@ -90,20 +96,7 @@ const ManageJobs = () => {
 
   // Update Jobs
   const handleUpdate = async (updatedJob: Job) => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/jobs/${updatedJob._id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedJob),
-      },
-    );
-
-    if (!res.ok) {
-      throw new Error("Failed to update job");
-    }
+    await updateJob(updatedJob._id, updatedJob);
 
     setJobs((prev) =>
       prev.map((job) => (job._id === updatedJob._id ? updatedJob : job)),
@@ -294,7 +287,12 @@ const ManageJobs = () => {
                           align="end"
                           className="border-white/10 bg-[#181818] text-white"
                         >
-                          <EditJobAction job={job} onSave={handleUpdate} />
+                          <ViewJobDetails jobId={job._id} />
+
+                          <DropdownMenuItem onClick={() => setEditingJob(job)}>
+                            <Pencil className="mr-2 size-4" />
+                            Edit Job
+                          </DropdownMenuItem>
 
                           <DeleteJobAction
                             onDelete={() => handleDelete(job._id)}
@@ -309,6 +307,13 @@ const ManageJobs = () => {
           </Table>
         </div>
       </div>
+      {editingJob && (
+        <EditJobAction
+          job={editingJob}
+          onSave={handleUpdate}
+          onClose={() => setEditingJob(null)}
+        />
+      )}
     </div>
   );
 };

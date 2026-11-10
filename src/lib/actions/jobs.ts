@@ -24,3 +24,19 @@ export const deleteJobs = async (id: string) => {
 
   return res.json();
 };
+
+export const updateJob = async (id: string, updatedJob: JobDataTypes) => {
+  const res = await fetch(`${BASE_URL}/jobs/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedJob),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update job");
+  }
+
+  return res.json();
+};
