@@ -3,13 +3,11 @@ import Link from "next/link";
 import { getJobs } from "@/lib/actions/jobs";
 import type { BrowseJobTypes } from "@/types/jobDataTypes";
 
-import { Search, MapPin, BriefcaseBusiness, DollarSign } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+
+import JobCard from "@/components/shared/JobCard";
+import JobSearchForm from "@/components/shared/JobSearchForm";
+import JobFilters from "@/components/shared/JobFilters";
 
 type SearchParams = {
   [key: string]: string | string[] | undefined;
@@ -42,7 +40,7 @@ const BrowseJobs = async ({
 
   const sort = typeof params.sort === "string" ? params.sort : "recent";
 
-  const jobTypes = ["Full-time", "Part-time", "Contract", "Internship"];
+  const jobTypes = ["full-time", "part-time", "contract", "internship"];
 
   // Get all available categories
   const categories = [
@@ -76,9 +74,6 @@ const BrowseJobs = async ({
     currentPage * jobsPerPage,
   );
 
-  // Format salary
-  const formatSalary = (amount: number) => `$${amount.toLocaleString("en-US")}`;
-
   // Generate pagination URL
   const createPageUrl = (pageNumber: number) => {
     const urlParams = new URLSearchParams(queryParams);
@@ -103,141 +98,27 @@ const BrowseJobs = async ({
     <main className="min-h-screen bg-[#09090b] text-white">
       <div className="mx-auto max-w-7xl px-4 py-8">
         {/* Search */}
-        <form
-          action="/browse-jobs"
-          method="GET"
-          className="mb-6 flex flex-col gap-3 rounded-xl border border-white/10 bg-[#151518] p-4 sm:flex-row"
-        >
-          {/* Preserve existing filters */}
-          {Array.from(queryParams.entries())
-            .filter(([key]) => key !== "search")
-            .map(([key, value]) => (
-              <input key={key} type="hidden" name={key} value={value} />
-            ))}
-
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-gray-500" />
-
-            <Input
-              name="search"
-              defaultValue={
-                typeof params.search === "string" ? params.search : ""
-              }
-              placeholder="Search by job title, keywords..."
-              className="h-12 border-white/10 bg-[#202024] pl-11 text-white placeholder:text-gray-500"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="h-12 bg-white text-black hover:bg-gray-200"
-          >
-            Search Jobs
-          </Button>
-        </form>
+        <JobSearchForm
+          search={typeof params.search === "string" ? params.search : ""}
+          hiddenParams={Array.from(queryParams.entries())}
+        />
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-[240px_1fr]">
           {/* Filters */}
-          <aside className="h-fit rounded-xl border border-white/10 bg-[#151518] p-5">
-            <h2 className="mb-5 text-lg font-semibold">Filters</h2>
-
-            <form action="/browse-jobs" method="GET" className="space-y-6">
-              {/* Preserve search */}
-              {typeof params.search === "string" && (
-                <input type="hidden" name="search" value={params.search} />
-              )}
-
-              {/* Job Type */}
-              <div>
-                <h3 className="mb-3 text-sm font-medium">Job Type</h3>
-
-                <div className="space-y-3">
-                  {jobTypes.map((type) => (
-                    <label
-                      key={type}
-                      className="flex cursor-pointer items-center gap-3 text-sm text-gray-400"
-                    >
-                      <input
-                        type="radio"
-                        name="jobType"
-                        value={type}
-                        defaultChecked={params.jobType === type}
-                        className="size-4 accent-white"
-                      />
-
-                      {type}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <Separator className="bg-white/10" />
-
-              {/* Work Location */}
-              <div>
-                <h3 className="mb-3 text-sm font-medium">Work Location</h3>
-
-                <div className="space-y-3">
-                  {[
-                    { label: "Remote", value: "true" },
-                    { label: "On-site", value: "false" },
-                  ].map((option) => (
-                    <label
-                      key={option.label}
-                      className="flex cursor-pointer items-center gap-3 text-sm text-gray-400"
-                    >
-                      <input
-                        type="radio"
-                        name="remoteAllowed"
-                        value={option.value}
-                        defaultChecked={params.remoteAllowed === option.value}
-                        className="size-4 accent-white"
-                      />
-
-                      {option.label}
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              <Separator className="bg-white/10" />
-
-              {/* Category */}
-              <div>
-                <h3 className="mb-3 text-sm font-medium">Category</h3>
-
-                <select
-                  name="category"
-                  defaultValue={
-                    typeof params.category === "string" ? params.category : ""
-                  }
-                  className="h-10 w-full rounded-md border border-white/10 bg-[#202024] px-3 text-sm text-white outline-none"
-                >
-                  <option value="">All Categories</option>
-
-                  {categories.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-white text-black hover:bg-gray-200"
-              >
-                Apply Filters
-              </Button>
-
-              <Link
-                href="/browse-jobs"
-                className="flex h-9 w-full items-center justify-center rounded-md border border-white/10 bg-transparent px-4 text-sm font-medium text-white hover:bg-white/10"
-              >
-                Clear Filters
-              </Link>
-            </form>
-          </aside>
+          <JobFilters
+            jobTypes={jobTypes}
+            categories={categories}
+            search={typeof params.search === "string" ? params.search : ""}
+            jobType={typeof params.jobType === "string" ? params.jobType : ""}
+            remoteAllowed={
+              typeof params.remoteAllowed === "string"
+                ? params.remoteAllowed
+                : ""
+            }
+            category={
+              typeof params.category === "string" ? params.category : ""
+            }
+          />
 
           {/* Job Listings */}
           <section>
@@ -280,73 +161,7 @@ const BrowseJobs = async ({
             {/* Job Cards */}
             <div className="space-y-3">
               {paginatedJobs.length > 0 ? (
-                paginatedJobs.map((job) => (
-                  <Card
-                    key={job._id}
-                    className="border-white/10 bg-[#151518] text-white transition-colors hover:border-white/20"
-                  >
-                    <CardContent className="flex flex-col gap-4 p-5 sm:flex-row sm:items-start">
-                      {/* Company Icon */}
-                      <div className="flex size-12 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-[#222226]">
-                        <BriefcaseBusiness className="size-5 text-gray-400" />
-                      </div>
-
-                      {/* Job Information */}
-                      <div className="min-w-0 flex-1">
-                        <h3 className="text-base font-semibold">
-                          {job.jobTitle}
-                        </h3>
-
-                        <p className="mt-1 text-sm text-gray-400">
-                          {job.companyName} • {job.location}
-                          {job.isRemote ? " (Remote)" : ""}
-                        </p>
-
-                        {/* Job Badges */}
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          <Badge
-                            variant="outline"
-                            className="border-white/10 text-gray-300"
-                          >
-                            <DollarSign className="mr-1 size-3" />
-                            {formatSalary(job.minSalary)} -{" "}
-                            {formatSalary(job.maxSalary)}
-                          </Badge>
-
-                          <Badge
-                            variant="outline"
-                            className="border-white/10 text-gray-300"
-                          >
-                            {job.jobType}
-                          </Badge>
-
-                          <Badge
-                            variant="outline"
-                            className="border-white/10 text-gray-300"
-                          >
-                            <MapPin className="mr-1 size-3" />
-
-                            {job.category}
-                          </Badge>
-
-                          {job.isRemote && (
-                            <Badge className="border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
-                              Remote
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* View Details */}
-                      <Link
-                        href={`/jobs/${job._id}`}
-                        className="flex h-9 items-center justify-center rounded-md border border-white/10 bg-transparent px-4 text-sm font-medium text-white hover:bg-white/10"
-                      >
-                        View Details
-                      </Link>
-                    </CardContent>
-                  </Card>
-                ))
+                paginatedJobs.map((job) => <JobCard key={job._id} job={job} />)
               ) : (
                 <div className="rounded-xl border border-white/10 bg-[#151518] py-16 text-center">
                   <h3 className="text-lg font-semibold">No jobs found</h3>
