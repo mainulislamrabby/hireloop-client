@@ -2,7 +2,7 @@ export interface JobDataTypes {
   title: string;
   company: string;
   category: string;
-  jobType: "full-time" | "part-time" | "contract" | "internship";
+  jobType: "Full-time" | "Part-time" | "Contract" | "Internship";
   remoteAllowed: boolean;
   location: string;
   deadline: string;
@@ -25,3 +25,19 @@ export type JobWithMetaTypes = JobDataTypes & {
   status?: "active" | "expired";
   createdAt?: string;
 };
+
+export interface BrowseJobTypes {
+  _id: string;
+  jobTitle: string;
+  companyName: string;
+  category: string;
+  jobType: "Full-time" | "Part-time" | "Contract" | "Internship";
+  isRemote: boolean;
+  location: string;
+  minSalary: number;
+  maxSalary: number;
+  frequency: string | null;
+  responsibilities: string;
+  qualifications: string;
+  createdAt?: string;
+}

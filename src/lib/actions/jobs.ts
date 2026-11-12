@@ -2,6 +2,16 @@ import { JobDataTypes } from "@/types/jobDataTypes";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+export const getJobs = async (query: string = "") => {
+  const res = await fetch(`${BASE_URL}/jobs${query ? `?${query}` : ""}`);
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch jobs");
+  }
+
+  return res.json();
+};
+
 export const createJob = async (data: JobDataTypes) => {
   const res = await fetch(`${BASE_URL}/jobs`, {
     method: "POST",

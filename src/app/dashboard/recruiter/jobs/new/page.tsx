@@ -55,6 +55,8 @@ const AddNewJobs = () => {
       requirements: formData.get("requirements") as string,
     };
 
+    router.push("/dashboard/recruiter/jobs");
+
     console.log("Job Form Data:", jobData);
 
     toast.success("Job details saved successfully!");
