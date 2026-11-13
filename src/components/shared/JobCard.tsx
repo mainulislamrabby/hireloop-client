@@ -5,6 +5,7 @@ import type { BrowseJobTypes } from "@/types/jobDataTypes";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import ApplyNow from "./ApplyNow";
 
 type JobCardProps = {
   job: BrowseJobTypes;
@@ -60,17 +61,12 @@ const JobCard = ({ job }: JobCardProps) => {
           <div className="mt-5 flex flex-wrap gap-2">
             <Link
               href={`/jobs/${job._id}`}
-              className="inline-flex h-9 items-center justify-center rounded-md border border-white/10 px-4 text-sm font-medium text-white transition-colors hover:bg-white/10"
+              className="inline-flex h-11 items-center justify-center rounded-md border border-white/10 px-4 text-sm font-medium text-white transition-colors hover:bg-white/10"
             >
               View Details
             </Link>
 
-            <Link
-              href={`/jobs/${job._id}/apply`}
-              className="inline-flex h-9 items-center justify-center rounded-md bg-emerald-600 px-4 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
-            >
-              Apply Now
-            </Link>
+            <ApplyNow jobId={job._id.toString()} />
           </div>
         </div>
       </CardContent>

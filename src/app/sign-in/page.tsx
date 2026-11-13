@@ -16,7 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type Provider = "google" | "github" | "linkedin";
 
@@ -31,6 +31,9 @@ const SignInPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
+
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") ?? "/";
 
   // Email and password submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -54,7 +57,7 @@ const SignInPage = () => {
         email: credentials.email, // required, The email address of the user.
         password: credentials.password, // required, The password of the user. It should be at least 8 characters long and max 128 by default.
         rememberMe: credentials.rememberMe, // If false, the user will be signed out when the browser is closed. (optional) (default: true)
-        callbackURL: "/", // An optional URL to redirect to after the user signs in. (optional)
+        callbackURL: redirectTo, // An optional URL to redirect to after the user signs in. (optional)
       });
 
       if (error) {

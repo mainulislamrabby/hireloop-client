@@ -19,6 +19,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
+import ApplyNow from "@/components/shared/ApplyNow";
+
 type JobDetailsProps = {
   params: Promise<{ id: string }>;
 };
@@ -85,12 +87,7 @@ const JobDetailes = async ({ params }: JobDetailsProps) => {
               </div>
             </div>
 
-            <Link
-              href={`/jobs/${job._id}/apply`}
-              className="inline-flex h-10 items-center justify-center rounded-md bg-white px-5 text-sm font-semibold text-black hover:bg-gray-200"
-            >
-              Apply Now
-            </Link>
+            <ApplyNow jobId={job._id.toString()} />
           </CardContent>
         </Card>
 
