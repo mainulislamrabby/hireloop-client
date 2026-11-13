@@ -268,7 +268,7 @@ const OverviewCard = ({ icon, title, value }: OverviewCardProps) => (
 
       <div className="min-w-0">
         <p className="text-xs text-white/40">{title}</p>
-        <p className="mt-1 break-words text-sm font-medium">{value}</p>
+        <p className="mt-1 wrap-break-word text-sm font-medium">{value}</p>
       </div>
     </CardContent>
   </Card>

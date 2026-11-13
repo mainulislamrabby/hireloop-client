@@ -12,6 +12,7 @@ type JobCardProps = {
 
 const JobCard = ({ job }: JobCardProps) => {
   const formatSalary = (amount: number) => `$${amount.toLocaleString("en-US")}`;
+  const isRemote = job.remoteAllowed ?? job.isRemote ?? false;
 
   return (
     <Card className="border-white/10 bg-[#151518] text-white transition-colors hover:border-white/20">
@@ -29,7 +30,7 @@ const JobCard = ({ job }: JobCardProps) => {
 
           <p className="mt-1 text-sm text-gray-400">
             {job.companyName || job.company || "Company"} • {job.location}
-            {job.isRemote ? " (Remote)" : ""}
+            {isRemote ? " (Remote)" : ""}
           </p>
 
           {/* Job Badges */}
@@ -48,7 +49,7 @@ const JobCard = ({ job }: JobCardProps) => {
               {job.category}
             </Badge>
 
-            {job.isRemote && (
+            {isRemote && (
               <Badge className="border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
                 Remote
               </Badge>

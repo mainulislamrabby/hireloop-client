@@ -34,7 +34,8 @@ export interface BrowseJobTypes {
   company?: string;
   category: string;
   jobType: string;
-  isRemote: boolean;
+  isRemote?: boolean;
+  remoteAllowed?: boolean;
   location: string;
   minSalary: number;
   maxSalary: number;

@@ -12,6 +12,20 @@ export const getJobs = async (query: string = "") => {
   return res.json();
 };
 
+export const getJobById = async (id: string) => {
+  const res = await fetch(`${BASE_URL}/jobs/${id}`, {
+    cache: "no-store",
+  });
+
+  if (res.status === 404) return null;
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch job details");
+  }
+
+  return res.json();
+};
+
 export const createJob = async (data: JobDataTypes) => {
   const res = await fetch(`${BASE_URL}/jobs`, {
     method: "POST",
