@@ -19,15 +19,6 @@ const ApplyNow = ({ jobId }: ApplyNowProps) => {
         `/sign-in?redirectTo=${encodeURIComponent(`/jobs/${jobId}`)}`,
       );
       return;
-    } else {
-      // save application to database
-      console.log("Save the application to the database");
-      const application = {
-        jobId: jobId,
-        userId: user.id,
-        email: user.email,
-        name: user.name,
-      };
     }
 
     router.push(`/jobs/${jobId}/apply`);

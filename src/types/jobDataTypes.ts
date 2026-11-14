@@ -44,3 +44,13 @@ export interface BrowseJobTypes {
   qualifications?: string;
   createdAt?: string;
 }
+
+export interface ApplicationDataTypes {
+  jobId: string;
+  userId: string;
+  name: string;
+  email: string;
+  phone: string;
+  resumeUrl: string;
+  coverLetter: string;
+}
