@@ -19,3 +19,19 @@ export async function applyToJob(data: ApplicationDataTypes) {
 
   return result;
 }
+
+export const getApplications = async (query = "") => {
+  const url = query
+    ? `${BASE_URL}/applications?${query}`
+    : `${BASE_URL}/applications`;
+
+  const res = await fetch(url, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch applications");
+  }
+
+  return res.json();
+};
