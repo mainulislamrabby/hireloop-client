@@ -7,7 +7,7 @@ import { ArrowLeft, BriefcaseBusiness, Send } from "lucide-react";
 import { toast } from "sonner";
 
 import { authClient } from "@/lib/auth-client";
-import { applyToJob } from "@/lib/actions/application";
+import { applyToJob, getApplicationsCount } from "@/lib/actions/application";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +32,7 @@ const Application = ({ jobId, jobTitle, company }: ApplicationProps) => {
 
   const handleApplication = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
 
     if (!user) {
       router.push(
@@ -45,21 +46,28 @@ const Application = ({ jobId, jobTitle, company }: ApplicationProps) => {
       return;
     }
 
-    const formData = new FormData(event.currentTarget);
-
-    const application = {
-      jobId,
-      userId: user.id,
-      name: user.name,
-      email: user.email,
-      phone: String(formData.get("phone") || ""),
-      resumeUrl: String(formData.get("resumeUrl") || ""),
-      coverLetter: String(formData.get("coverLetter") || ""),
-    };
-
     setIsSubmitting(true);
 
     try {
+      // Check existing application count
+      const countResult = await getApplicationsCount(`applicantId=${user.id}`);
+
+      // Redirect to payment if the user has reached the limit
+      if (countResult.count >= 5) {
+        router.push("/payment");
+        return;
+      }
+
+      const application = {
+        jobId,
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        phone: String(formData.get("phone") || ""),
+        resumeUrl: String(formData.get("resumeUrl") || ""),
+        coverLetter: String(formData.get("coverLetter") || ""),
+      };
+
       const result = await applyToJob(application);
 
       if (result.insertedId) {

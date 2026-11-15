@@ -35,3 +35,19 @@ export const getApplications = async (query = "") => {
 
   return res.json();
 };
+
+export const getApplicationsCount = async (query = "") => {
+  const url = query
+    ? `${BASE_URL}/applications/count?${query}`
+    : `${BASE_URL}/applications/count`;
+
+  const res = await fetch(url, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch applications");
+  }
+
+  return res.json();
+};
