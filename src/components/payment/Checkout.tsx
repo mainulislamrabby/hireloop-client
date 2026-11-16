@@ -23,7 +23,7 @@ import { Separator } from "@/components/ui/separator";
 import { useEffect } from "react";
 import { toast } from "sonner";
 
-const PLAN_PRICE = 499;
+const PLAN_PRICE = 2500;
 
 type CheckoutProps = {
   canceled?: string;

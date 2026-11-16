@@ -16,6 +16,8 @@ const features = [
   "Priority application experience",
 ];
 
+const pricePlan = 2500;
+
 const PaymentPage = () => {
   return (
     <main className="min-h-screen bg-[#09090b] px-4 py-16 text-white">
@@ -57,7 +59,7 @@ const PaymentPage = () => {
                 <p className="text-sm text-white/50">One-time payment</p>
 
                 <div className="mt-2 flex items-baseline gap-2">
-                  <span className="text-4xl font-bold">৳499</span>
+                  <span className="text-4xl font-bold">৳{pricePlan}</span>
                   <span className="text-sm text-white/40">/ one-time</span>
                 </div>
 

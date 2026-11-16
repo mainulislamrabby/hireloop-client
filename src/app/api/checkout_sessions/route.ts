@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { stripe } from "@/lib/stripe";
+import { getSession } from "@/lib/server";
 
 export async function POST() {
+  const userSession = await getSession();
   try {
     const headersList = await headers();
     const origin = headersList.get("origin");
@@ -12,11 +14,15 @@ export async function POST() {
       line_items: [
         {
           // Provide the exact Price ID (for example, price_1234) of the product you want to sell
-          price: "price_1Uc7JJEhMkDXVqrYbOoYjkzs",
+          price: 'price_1UcIN3EhMkDXVqrYdN3aVaSo',
           quantity: 1,
         },
       ],
       mode: "payment",
+      customer_email: userSession?.user.email,
+      metadata: {
+        userId: userSession?.user.id,
+      },
       success_url: `${origin}/payment/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       // Provide a name (for example, hosted_web_0001) to label this Checkout integration and measure its conversion independently
       integration_identifier: "hire_loop_web_0001",
